@@ -3,9 +3,11 @@ package com.imooc.controller;//package com.imooc.controller;
 import com.github.pagehelper.PageInfo;
 import com.imooc.utils.RedisOperator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
+@CrossOrigin
 public class BaseInfoProperties {
 
     @Autowired

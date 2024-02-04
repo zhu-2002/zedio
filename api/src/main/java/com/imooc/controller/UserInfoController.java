@@ -1,10 +1,14 @@
 package com.imooc.controller;
 
+import com.imooc.MinIOConfig;
 import com.imooc.bo.UpdatedUserBO;
+import com.imooc.enums.FileTypeEnum;
 import com.imooc.enums.UserInfoModifyType;
 import com.imooc.pojo.Users;
 import com.imooc.result.GraceJSONResult;
+import com.imooc.result.ResponseStatusEnum;
 import com.imooc.service.UserService;
+import com.imooc.utils.MinIOUtils;
 import com.imooc.utils.SMSUtils;
 import com.imooc.vo.UsersVO;
 import io.swagger.annotations.Api;
@@ -13,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 // log4j的注释
 @Api(tags = "UserInfo 用户信息接口模块")
@@ -68,7 +73,7 @@ public class UserInfoController extends BaseInfoProperties{
     @PostMapping("modifyUserInfo")
     public Object modifyUserInfo(@RequestBody UpdatedUserBO updatedUserBO
                                 , @RequestParam Integer type
-                    ) throws Exception {
+                                ) throws Exception {
         // 检查类型是否存在
 
         UserInfoModifyType.checkUserInfoTypeIsRight(type);
@@ -78,4 +83,38 @@ public class UserInfoController extends BaseInfoProperties{
         return GraceJSONResult.ok(newUserInfo) ;
     }
 
+    @Autowired
+    private MinIOConfig minIOConfig ;
+
+    @PostMapping("modifyImage")
+    public Object modifyImage(@RequestParam String userId
+                        , @RequestParam Integer type
+                        ,MultipartFile file
+                        ) throws Exception{
+
+        if (!type.equals(FileTypeEnum.BGIMG.type) && !type.equals(FileTypeEnum.FACE.type)) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.SYSTEM_RESPONSE_NO_INFO) ;
+        }
+
+        String filename = file.getOriginalFilename();
+
+        MinIOUtils.uploadFile(minIOConfig.getBucketName(),filename,file.getInputStream());
+
+        String imgUrl = minIOConfig.getFileHost()
+                + "/"
+                + minIOConfig.getBucketName()
+                + "/" + filename;
+
+        // 修改图片地址到数据库
+        UpdatedUserBO updatedUserBO = new UpdatedUserBO();
+        updatedUserBO.setId(userId);
+        if (type.equals(FileTypeEnum.BGIMG.type)){
+            updatedUserBO.setBgImg(imgUrl);
+        }else {
+            updatedUserBO.setFace(imgUrl);
+        }
+        Users users = userService.updateUserInfo(updatedUserBO);
+
+        return GraceJSONResult.ok(users) ;
+    }
 }

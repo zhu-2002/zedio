@@ -95,6 +95,7 @@ public class PassportController extends BaseInfoProperties{
         BeanUtils.copyProperties(user, usersVO);
         usersVO.setUserToken(uToken);
 
+
         return GraceJSONResult.ok(usersVO);
     }
 
