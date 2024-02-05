@@ -144,15 +144,80 @@
   - 创建对应的拦截器
   - 注册对应拦截器路由
 
-## 视频传输开发
+## 视频业务开发
 
-1. 使用uniclod，与前端关联
-2. 实现视频上传功能
-3. 
+### 使用uniclod，与前端关联
+
+### 实现视频上传功能
+
+- **model**
+  - 构建对应的vlogBO
+
+- **service**
+  - 创建对应的vlogservice，编写创建vlog的方法
+
+- **api**
+  - 创建对应的controller方法
 
 
+### 实现视频列表显示
 
+在数据库中进行连表查询
 
+- **mapper**
+  - 创建对应的新的vlogMapperCustom接口，添加repsitory注解
+  - 创建对应的xml文件，修改映射配置，编写对应的SQL语句
+- **model**
+  - 创建新的IndexVlogVO，来接受数据库的查询结果
+- **service**
+  - 新增查询视频列表的功能
+- **api**
+  - 新增查询视频列表的controller
+
+### 实现视频详情页展示
+
+- **mapper**
+  - 在新的vlogMapperCustom接口中新增对应的方法
+  - 创建对应的xml文件，修改映射配置，编写对应的SQL语句
+- **service**
+  - 在视频service中新增对应的功能
+- **api**
+  - 在视频的controller中新增对应的方法
+
+### 实现视频私密和公开转换
+
+### 展示我的私密视频/公共视频列表
+
+## 粉丝业务开发
+
+### 用户互关功能的实现
+
+- **service**
+  - 在粉丝service中新增对应的功能
+- **api**
+  - 在粉丝controller中新增对应的方法
+  - 使用redis存储相关信息计数
+
+### 用户取关功能的实现
+
+- **service**
+  - 在粉丝service中新增对应的功能
+- **api**
+  - 在粉丝controller中新增对应的方法
+  - 删除redis存储计数信息
+
+### 判断用户是否已经关注
+
+- **service**
+
+  - 在粉丝service中新增对应的功能
+
+- **api**
+
+  - 在粉丝controller中新增对应的方法
+  - 在controller中添加对应的路由
+
+  
 
 
 

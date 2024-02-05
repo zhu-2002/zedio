@@ -1,6 +1,6 @@
 package com.imooc.intercepter;
 
-import com.imooc.controller.BaseInfoProperties;
+import com.imooc.controller.BaseInfoController;
 import com.imooc.exceptions.GraceException;
 import com.imooc.result.ResponseStatusEnum;
 import com.imooc.utils.IPUtil;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
-public class PassportInterceptor extends BaseInfoProperties implements HandlerInterceptor {
+public class PassportInterceptor extends BaseInfoController implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request,

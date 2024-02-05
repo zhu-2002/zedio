@@ -1,16 +1,15 @@
 package com.imooc.bo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 public class VlogBO {
+    @NonNull
     private String id;
+    @NonNull
     private String vlogerId;
     private String url;
     private String cover;

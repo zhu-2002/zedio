@@ -1,13 +1,12 @@
-package com.imooc.controller;//package com.imooc.controller;
+package com.imooc.base;//package com.imooc.controller;
 //
 import com.github.pagehelper.PageInfo;
+import com.imooc.utils.PagedGridResult;
 import com.imooc.utils.RedisOperator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
-@CrossOrigin
 public class BaseInfoProperties {
 
     @Autowired
@@ -24,6 +23,9 @@ public class BaseInfoProperties {
     public static final String REDIS_MY_FOLLOWS_COUNTS = "redis_my_follows_counts";
     // 我的粉丝总数
     public static final String REDIS_MY_FANS_COUNTS = "redis_my_fans_counts";
+
+    // 博主和粉丝的关联关系，用于判断他们是否互粉
+    public static final String REDIS_FANS_AND_VLOGGER_RELATIONSHIP = "redis_fans_and_vlogger_relationship";
 
     // 视频和发布者获赞数
     public static final String REDIS_VLOG_BE_LIKED_COUNTS = "redis_vlog_be_liked_counts";
@@ -43,14 +45,14 @@ public class BaseInfoProperties {
 //        return map;
 //    }
 
-//    public PagedGridResult setterPagedGrid(List<?> list,
-//                                           Integer page) {
-//        PageInfo<?> pageList = new PageInfo<>(list);
-//        PagedGridResult gridResult = new PagedGridResult();
-//        gridResult.setRows(list);
-//        gridResult.setPage(page);
-//        gridResult.setRecords(pageList.getTotal());
-//        gridResult.setTotal(pageList.getPages());
-//        return gridResult;
-//    }
+    public PagedGridResult setterPagedGrid(List<?> list,
+                                           Integer page) {
+        PageInfo<?> pageList = new PageInfo<>(list);
+        PagedGridResult gridResult = new PagedGridResult();
+        gridResult.setRows(list);
+        gridResult.setPage(page);
+        gridResult.setRecords(pageList.getTotal());
+        gridResult.setTotal(pageList.getPages());
+        return gridResult;
+    }
 }

@@ -9,10 +9,8 @@ import com.imooc.result.GraceJSONResult;
 import com.imooc.result.ResponseStatusEnum;
 import com.imooc.service.UserService;
 import com.imooc.utils.MinIOUtils;
-import com.imooc.utils.SMSUtils;
 import com.imooc.vo.UsersVO;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Api(tags = "UserInfo 用户信息接口模块")
 @RequestMapping("userInfo")
 @RestController
-public class UserInfoController extends BaseInfoProperties{
+public class UserInfoController extends BaseInfoController {
     @Autowired
     private UserService userService ;
 

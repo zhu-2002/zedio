@@ -1,6 +1,6 @@
 package com.imooc.intercepter;
 
-import com.imooc.controller.BaseInfoProperties;
+import com.imooc.controller.BaseInfoController;
 import com.imooc.exceptions.GraceException;
 import com.imooc.result.ResponseStatusEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
-public class UserTokenInterceptor extends BaseInfoProperties implements HandlerInterceptor {
+public class UserTokenInterceptor extends BaseInfoController implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request,

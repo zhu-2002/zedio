@@ -23,7 +23,7 @@ import java.util.UUID;
 @Api(tags = "PassportController 通信证接口模块")
 @RequestMapping("passport")
 @RestController
-public class PassportController extends BaseInfoProperties{
+public class PassportController extends BaseInfoController {
 
     @Autowired
     private SMSUtils smsUtils;
