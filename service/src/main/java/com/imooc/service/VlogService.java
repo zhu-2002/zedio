@@ -18,7 +18,9 @@ public interface VlogService {
     /*
      * 查询vlog视频列表
      * */
-    public PagedGridResult getIndexVlogList(String search, Integer page , Integer pageSize);
+    public PagedGridResult getIndexVlogList(String userId,String search, Integer page , Integer pageSize);
+
+    Integer getVlogBeLikedCounts(String vlogId);
 
     /*
      * 根据视频主键查询vlog
@@ -41,6 +43,24 @@ public interface VlogService {
                                            Integer pageSize,
                                            Integer yesOrNo);
 
+    /**
+     * 用户点赞视频
+     */
+    public void userLikeVlog(String userId, String vlogId);
 
+    /**
+     * 用户取消点赞视频
+     * */
+    public void userUnlikeVlog(String userId, String vlogId);
+
+    /*
+    *查询用户点赞过的视频
+    * */
+    public PagedGridResult getMyLikedVlogList(String userId , Integer page , Integer pageSize);
+
+    /*
+     *查询关注用户的视频
+     * */
+    public PagedGridResult getMyFollowVlogList(String userId , Integer page , Integer pageSize);
 
 }

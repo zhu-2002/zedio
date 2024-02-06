@@ -209,25 +209,126 @@
 ### 判断用户是否已经关注
 
 - **service**
-
   - 在粉丝service中新增对应的功能
-
+  
 - **api**
 
   - 在粉丝controller中新增对应的方法
   - 在controller中添加对应的路由
 
-  
 
+### 查询我的关注/粉丝列表
 
+- **mapper**
+  - 在新的FansMapperCustom接口中新增对应的方法
+  - 创建对应的xml文件，修改映射配置，编写对应的SQL语句
+- **service**
+  - 在粉丝service中新增对应的功能
+- **api**
+  - 在粉丝controller中新增对应的方法
 
+### 用户点赞/取消点赞视频
 
+- **service**
 
+  - 在视频service中新增对应的功能
 
+- **api**
+  - 在视频controller中新增对应的方法
+  - 在视频controller中添加对应的路由
 
+### 展现用户点赞视频列表
 
+- **service**
+  - 在视频service中新增对应的功能
 
+- **api**
+  - 在视频controller中新增对应的方法
+  - 在视频controller中添加对应的路由
 
+### 用户是否点赞视频的判断
+
+- **service**
+  - 在视频service中修改之前显示视频列表的对应功能
+
+- **api**
+  - 在视频controller中修改显示视频列表对应的方法
+  - 在视频controller中修改显示视频列表对应的路由处理
+
+### 视频页点赞总数展示
+
+- **service**
+  - 在视频service的显示视频列表中新增点赞总数查询与显示
+
+- **api**
+  - 在视频controller中新增点赞后再次查询点赞总数并刷新的功能
+
+### 用户页点赞视频列表展示
+
+- **mapper**
+  - 在VlogMapperCustom接口中新增对应的方法
+  - 在对应的xml文件中编写对应的SQL语句
+- **service**
+  - 在Vlogservice中新增对应的功能
+- **api**
+  - 在Vlogcontroller中新增对应的方法
+
+### 我的关注视频列表展示
+
+与用户页点赞视频列表展示类似，仅SQL语句有差别
+
+## 评论业务开发
+
+### 用户发表评论
+
+- ​	**model**
+  - 根据前端业务，创建对应的BO和VO
+
+- **service**
+  - 创建新的service类，实现创建评论的方法
+- **api**
+  - 创建新的controller类，实现创建评论的方法
+
+### 显示评论总数
+
+- **api**
+  - 在commenController中创建，获取redis对应值的路由方法
+
+### 查询评论列表
+
+- **mapper**
+  - 在新的CommentMapperCustom接口中新增对应的方法
+  - 创建对应的xml文件，修改映射配置，编写对应的SQL语句
+- **service**
+  - 在commenService中新增对应的功能
+- **api**
+  - 在commenController中新增对应的方法
+
+### 删除评论
+
+- **service**
+  - 在commenService中新增对应的功能，删除对应的数据库记录即可
+- **api**
+  - 在commenController中新增对应的路由方法
+
+### 点赞/取消点赞评论
+
+**api**
+
+- 在commenController中新增对应的路由方法
+
+### 展示是否点赞与评论总数
+
+- **service**
+  - 在commenService中之前的查询评论列表方法中新增对reids中关于短视频的评论信息获取，显示到前端。
+
+## 消息业务开发
+
+### 消息数据库选型
+
+MongoDB
+
+/usr/local/mongodb-linux-x86_64-rhel70-4.2.8/mongod -f mongodb.conf
 
 
 

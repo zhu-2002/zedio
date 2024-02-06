@@ -1,23 +1,35 @@
 package com.imooc.service.impl;
 
 
+import com.github.pagehelper.PageHelper;
+import com.imooc.base.BaseInfoProperties;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.FansMapper;
+import com.imooc.mapper.FansMapperCustom;
 import com.imooc.pojo.Fans;
 import com.imooc.service.FansService;
+import com.imooc.utils.PagedGridResult;
+import com.imooc.vo.FansVO;
+import com.imooc.vo.VlogerVO;
+import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
-public class FansServiceImpl implements FansService {
+public class FansServiceImpl extends BaseInfoProperties implements FansService {
 
     @Autowired
     private FansMapper fansMapper ;
+
+    @Autowired
+    private FansMapperCustom fansMapperCustom ;
 
     @Autowired
     private Sid sid ;
@@ -63,8 +75,45 @@ public class FansServiceImpl implements FansService {
     @Override
     public boolean queryFollow(String myId, String vlogerId) {
         Fans vloger = queryFansRealation(myId, vlogerId);
-        return vloger != null ;
+        return vloger != null;
     }
+
+    @Override
+    public PagedGridResult queryMyFollows(String myId,
+                                          Integer page,
+                                          Integer pageSize) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("myId", myId);
+
+        PageHelper.startPage(page, pageSize);
+
+        List<VlogerVO> list = fansMapperCustom.queryMyFollows(map);
+
+        return setterPagedGrid(list, page);
+    }
+
+    @Override
+    public PagedGridResult queryMyFans(String myId,
+                                       Integer page,
+                                       Integer pageSize) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("myId", myId);
+
+        PageHelper.startPage(page, pageSize);
+
+        List<FansVO> list = fansMapperCustom.queryMyFans(map);
+
+        for (FansVO f : list) {
+            String relationship = redis.get(REDIS_FANS_AND_VLOGGER_RELATIONSHIP + ":" + myId + ":" + f.getFanId());
+            if (StringUtils.isNotBlank(relationship) && relationship.equalsIgnoreCase("1")) {
+                f.setFriend(true);
+            }
+        }
+
+        return setterPagedGrid(list, page);
+    }
+
 
     public Fans queryFansRealation(String fanId , String vlogerId){
         Example example = new Example(Fans.class);

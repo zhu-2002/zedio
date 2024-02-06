@@ -80,26 +80,27 @@ public class FansController extends BaseInfoController {
                                                 @RequestParam String vlogerId) {
         return GraceJSONResult.ok(fansService.queryFollow(myId, vlogerId));
     }
-//
-//    @GetMapping("queryMyFollows")
-//    public GraceJSONResult queryMyFollows(@RequestParam String myId,
-//                                          @RequestParam Integer page,
-//                                          @RequestParam Integer pageSize) {
-//        return GraceJSONResult.ok(
-//                fansService.queryMyFollows(
-//                        myId,
-//                        page,
-//                        pageSize));
-//    }
-//
-//    @GetMapping("queryMyFans")
-//    public GraceJSONResult queryMyFans(@RequestParam String myId,
-//                                          @RequestParam Integer page,
-//                                          @RequestParam Integer pageSize) {
-//        return GraceJSONResult.ok(
-//                fansService.queryMyFans(
-//                        myId,
-//                        page,
-//                        pageSize));
-//    }
+
+    @GetMapping("queryMyFollows")
+    public GraceJSONResult queryMyFollows(@RequestParam String myId,
+                                          @RequestParam Integer page,
+                                          @RequestParam Integer pageSize) {
+        return GraceJSONResult.ok(
+                fansService.queryMyFollows(
+                        myId,
+                        page,
+                        pageSize));
+    }
+
+    @GetMapping("queryMyFans")
+    public GraceJSONResult queryMyFans(@RequestParam String myId,
+                                          @RequestParam Integer page,
+                                          @RequestParam Integer pageSize) {
+        return GraceJSONResult.ok(
+                fansService.queryMyFans(
+                        myId,
+                        page,
+                        pageSize));
+    }
+
 }
