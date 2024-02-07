@@ -3,6 +3,7 @@ package com.imooc.service;
 import com.imooc.bo.UpdatedUserBO;
 import com.imooc.bo.VlogBO;
 import com.imooc.pojo.Users;
+import com.imooc.pojo.Vlog;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.IndexVlogVO;
 
@@ -47,6 +48,8 @@ public interface VlogService {
      * 用户点赞视频
      */
     public void userLikeVlog(String userId, String vlogId);
+
+    Vlog getVlog(String vlogId);
 
     /**
      * 用户取消点赞视频

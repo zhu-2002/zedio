@@ -20,7 +20,7 @@ import javax.validation.Valid;
 import java.util.UUID;
 
 @Slf4j
-@Api(tags = "PassportController 通信证接口模块")
+@Api(tags = "通信验证 测试接口")
 @RequestMapping("passport")
 @RestController
 public class PassportController extends BaseInfoController {

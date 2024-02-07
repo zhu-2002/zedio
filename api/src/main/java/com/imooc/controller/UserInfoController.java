@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 // log4j的注释
-@Api(tags = "UserInfo 用户信息接口模块")
+@Api(tags = "用户信息 接口测试")
 @RequestMapping("userInfo")
 @RestController
 public class UserInfoController extends BaseInfoController {

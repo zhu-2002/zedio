@@ -4,15 +4,22 @@ package com.imooc.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
 import com.imooc.bo.CommentBO;
+import com.imooc.enums.MessageEnum;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.CommentMapper;
 import com.imooc.mapper.CommentMapperCustom;
+import com.imooc.mo.MessageMO;
 import com.imooc.pojo.Comment;
+import com.imooc.pojo.Vlog;
 import com.imooc.service.CommentService;
+import com.imooc.service.MsgService;
+import com.imooc.service.VlogService;
+import com.imooc.utils.JsonUtils;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.CommentVO;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +41,14 @@ public class CommenServiceImpl extends BaseInfoProperties implements CommentServ
     @Autowired
     private Sid sid ;
 
+    @Autowired
+    private MsgService msgService ;
+
+    @Autowired
+    private VlogService vlogService ;
+
+    @Autowired
+    public RabbitTemplate rabbitTemplate ;
 
     @Override
     public CommentVO createComment(CommentBO commentBO) {
@@ -61,6 +76,32 @@ public class CommenServiceImpl extends BaseInfoProperties implements CommentServ
         CommentVO commentVO = new CommentVO();
         BeanUtils.copyProperties(comment, commentVO);
 
+        // 系统消息
+        // 系统消息：评论/回复短视频
+        Vlog vlog = vlogService.getVlog(commentBO.getVlogId());
+        Map msgContent = new HashMap();
+
+        msgContent.put("vlogId", commentBO.getVlogId());
+        msgContent.put("vlogCover", vlog.getCover());
+        msgContent.put("commentId", commentId);
+        msgContent.put("commentContent", commentBO.getContent());
+
+        Integer mesType = MessageEnum.COMMENT_VLOG.type ;
+        String routeType = MessageEnum.COMMENT_VLOG.enValue;
+        if (StringUtils.isNotBlank(commentBO.getFatherCommentId()) && !commentBO.getFatherCommentId().equalsIgnoreCase("0") ){
+            mesType = MessageEnum.REPLY_YOU.type ;
+            routeType = MessageEnum.REPLY_YOU.enValue;
+        }
+
+//        msgService.createMsg(commentBO.getCommentUserId(),
+//                commentBO.getVlogerId(),
+//                mesType,
+//                msgContent);
+        MessageMO messageMO = new MessageMO();
+        messageMO.setFromUserId(commentBO.getCommentUserId());
+        messageMO.setToUserId(commentBO.getVlogerId());
+        messageMO.setMsgContent(msgContent);
+        this.rabbitTemplate.convertAndSend("exchange_msg", "sys.msg." + routeType, JsonUtils.objectToJson(messageMO));
 
         return commentVO;
     }

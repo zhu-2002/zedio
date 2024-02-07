@@ -2,19 +2,25 @@ package com.imooc.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
+import com.imooc.base.RabbitMQConfig;
 import com.imooc.bo.VlogBO;
+import com.imooc.enums.MessageEnum;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.MyLikedVlogMapper;
 import com.imooc.mapper.VlogMapper;
 import com.imooc.mapper.VlogMapperCustom;
+import com.imooc.mo.MessageMO;
 import com.imooc.pojo.MyLikedVlog;
 import com.imooc.pojo.Vlog;
 import com.imooc.service.FansService;
+import com.imooc.service.MsgService;
 import com.imooc.service.VlogService;
+import com.imooc.utils.JsonUtils;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.IndexVlogVO;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +49,12 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
 
     @Autowired
     private FansService fansService ;
+
+    @Autowired
+    private MsgService msgService ;
+
+    @Autowired
+    public RabbitTemplate rabbitTemplate ;
 
     @Override
     @Transactional
@@ -175,15 +187,29 @@ public class VlogServiceImpl extends BaseInfoProperties implements VlogService {
         myLikedVlogMapper.insert(likedVlog);
 
 
-//        // 系统消息：点赞短视频
-//        Vlog vlog = this.getVlog(vlogId);
-//        Map msgContent = new HashMap();
-//        msgContent.put("vlogId", vlogId);
-//        msgContent.put("vlogCover", vlog.getCover());
+        // 系统消息：点赞短视频
+        Vlog vlog = this.getVlog(vlogId);
+        Map msgContent = new HashMap();
+        msgContent.put("vlogId", vlogId);
+        msgContent.put("vlogCover", vlog.getCover());
 //        msgService.createMsg(userId,
 //                vlog.getVlogerId(),
 //                MessageEnum.LIKE_VLOG.type,
 //                msgContent);
+
+        // 使用消息队列解耦
+        MessageMO messageMO = new MessageMO();
+        messageMO.setFromUserId(userId);
+        messageMO.setToUserId(vlog.getVlogerId());
+        messageMO.setMsgContent(msgContent);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_MSG
+                ,"sys.msg."+MessageEnum.LIKE_VLOG.enValue
+                , JsonUtils.objectToJson(messageMO));
+    }
+
+    @Override
+    public Vlog getVlog(String vlogId){
+        return vlogMapper.selectByPrimaryKey(vlogId) ;
     }
 
     @Override

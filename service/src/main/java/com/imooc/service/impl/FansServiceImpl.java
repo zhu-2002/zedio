@@ -3,16 +3,22 @@ package com.imooc.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.imooc.base.BaseInfoProperties;
+import com.imooc.base.RabbitMQConfig;
+import com.imooc.enums.MessageEnum;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.FansMapper;
 import com.imooc.mapper.FansMapperCustom;
+import com.imooc.mo.MessageMO;
 import com.imooc.pojo.Fans;
 import com.imooc.service.FansService;
+import com.imooc.service.MsgService;
+import com.imooc.utils.JsonUtils;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.FansVO;
 import com.imooc.vo.VlogerVO;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +36,12 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
 
     @Autowired
     private FansMapperCustom fansMapperCustom ;
+
+    @Autowired
+    private MsgService msgService ;
+
+    @Autowired
+    public RabbitTemplate rabbitTemplate ;
 
     @Autowired
     private Sid sid ;
@@ -56,6 +68,17 @@ public class FansServiceImpl extends BaseInfoProperties implements FansService {
             fans.setIsFanFriendOfMine(YesOrNo.NO.type);
         }
         fansMapper.insert(fans);
+
+        // 系统消息 ： 关注
+        MessageMO messageMO = new MessageMO();
+        // msgService.createMsg(myId,vlogerId, MessageEnum.FOLLOW_YOU.type, null);
+        messageMO.setFromUserId(myId);
+        messageMO.setToUserId(vlogerId);
+        // 使用消息队列解耦
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_MSG
+                ,"sys.msg."+MessageEnum.FOLLOW_YOU.enValue
+                ,JsonUtils.objectToJson(messageMO));
+
     }
 
     @Override

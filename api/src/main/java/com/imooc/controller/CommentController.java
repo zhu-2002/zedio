@@ -1,15 +1,20 @@
 package com.imooc.controller;
 
+import com.imooc.base.RabbitMQConfig;
 import com.imooc.bo.CommentBO;
 import com.imooc.enums.MessageEnum;
+import com.imooc.mo.MessageMO;
 import com.imooc.pojo.Comment;
 import com.imooc.pojo.Vlog;
 import com.imooc.result.GraceJSONResult;
 import com.imooc.service.CommentService;
+import com.imooc.service.MsgService;
 import com.imooc.service.VlogService;
+import com.imooc.utils.JsonUtils;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
@@ -24,10 +29,13 @@ public class CommentController extends BaseInfoController {
 
     @Autowired
     private CommentService commentService;
-//    @Autowired
-//    private MsgService msgService;
+    @Autowired
+    private MsgService msgService;
     @Autowired
     private VlogService vlogService;
+
+    @Autowired
+    public RabbitTemplate rabbitTemplate ;
 
     @PostMapping("create")
     public Object create(@RequestBody @Valid CommentBO commentBO) throws Exception{
@@ -74,16 +82,26 @@ public class CommentController extends BaseInfoController {
 
 
         // 系统消息：点赞评论
-//        Comment comment = commentService.getComment(commentId);
-//        Vlog vlog = vlogService.getVlog(comment.getVlogId());
-//        Map msgContent = new HashMap();
-//        msgContent.put("vlogId", vlog.getId());
-//        msgContent.put("vlogCover", vlog.getCover());
-//        msgContent.put("commentId", commentId);
+        Comment comment = commentService.getComment(commentId);
+        Vlog vlog = vlogService.getVlog(comment.getVlogId());
+        Map msgContent = new HashMap();
+        msgContent.put("vlogId", vlog.getId());
+        msgContent.put("vlogCover", vlog.getCover());
+        msgContent.put("commentId", commentId);
 //        msgService.createMsg(userId,
 //                comment.getCommentUserId(),
 //                MessageEnum.LIKE_COMMENT.type,
 //                msgContent);
+
+        // MQ异步解耦
+        MessageMO messageMO = new MessageMO();
+        messageMO.setFromUserId(userId);
+        messageMO.setToUserId(comment.getCommentUserId());
+        messageMO.setMsgContent(msgContent);
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.EXCHANGE_MSG,
+                "sys.msg." + MessageEnum.LIKE_COMMENT.enValue,
+                JsonUtils.objectToJson(messageMO));
 
 
         return GraceJSONResult.ok();

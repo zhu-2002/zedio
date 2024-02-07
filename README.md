@@ -328,21 +328,73 @@
 
 MongoDB
 
-/usr/local/mongodb-linux-x86_64-rhel70-4.2.8/mongod -f mongodb.conf
+- 在linux环境下完成安装
+- 配置相关配置文件，本地测试连接
+- 添加对应的依赖，在yml中配置数据库信息，启动项添加@EnableMongoRepositories，对Mongo相关类扫描
 
+### 保存系统消息到MongoDB
 
+- **model**
+  - 创建新的包mo，新建新的类MessgeMo,添加Document注解，对对应字段添加Filed注解
+- **mapper**
+  - 编写repository接口，继承MongoRepository
+- **service**
+  - 创建对应的service接口，和对应的接口实现类，创建新增消息的方法
+- 给对应的业务添加创建消息的方法
+  - 关注博主
+    - FansServiceImp中createFollow方法中添加创建新增消息的语句
+  - 点赞视频
+    - VlogServiceImp中userLikeVlog方法中添加创建新增消息的语句
+  - 评论/回复评论
+    - CommentServiceImp中createComment方法中添加创建新增消息的语句
+  - 点赞评论
+    - CommentController中like路由方法中添加创建新增消息的语句
 
+### 查询消息列表
 
+- **mapper**
+  - 在repository接口中新增查询方法
+- **service**
+  - 在MsgService中新增对应的功能
+- **api**
+  - 在MsgController中新增对应的路由方法
 
+## 业务解耦
 
+### 将RabbitMQ整合到SpringBoot
 
+- **common**
+  - 引入对应的依赖
+- **api**
+  - yml添加对应的配置信息
 
+### 创建交换机和队列
 
+- **api**
+  - 创建RabbitMQConfig类，注册路由和交换机，以及两者绑定关系。
 
+### 创建生产者，配置路由规则
 
+- **api**
+  - 创建对应的消费者类
 
+- 给对应的业务添加创建生产者的方法
 
+  - 关注博主
+    - FansServiceImp中createFollow方法中添加创建新增消息的语句
 
+  - 点赞视频
+    - VlogServiceImp中userLikeVlog方法中添加创建新增消息的语句
+
+  - 评论/回复评论
+    - CommentServiceImp中createComment方法中添加创建新增消息的语句
+
+  - 点赞评论
+    - CommentController中like路由方法中添加创建新增消息的语句
+
+## Nacos分布式服务与SpringCloud Alibaba
+
+  
 
 
 

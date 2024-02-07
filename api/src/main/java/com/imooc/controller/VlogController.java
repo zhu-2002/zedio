@@ -155,7 +155,7 @@ public class VlogController extends BaseInfoController {
 
     // 刷新点赞后该视频的点赞总数
     @PostMapping("totalLikedCounts")
-    public GraceJSONResult unlike( @RequestParam String vlogId) {
+    public GraceJSONResult totalLikedCounts( @RequestParam String vlogId) {
         return GraceJSONResult.ok(vlogService.getVlogBeLikedCounts(vlogId)) ;
     }
 
