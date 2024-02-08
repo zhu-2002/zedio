@@ -394,15 +394,32 @@ MongoDB
 
 ## Nacos分布式服务与SpringCloud Alibaba
 
-  
+###   构建服务注册到Nacos
 
+- 在父类pom中添加对应的版本号，spring cloud 和 springcloud alibabab
+- 在api的pom中添加对应的微服务相关依赖，注册与发现、配置中心
+- 在yml文件中添加对应的配置，业务程序名字，nacos服务地址，打开监控
 
+### Nacos动态配置管理
 
+- 添加启动配置依赖
+- 添加bootstrap.yml配置文件。优先级高于application.yml，用于配置nacos服务中心
+- 在nacos服务网页添加新的配置
+- 在Hellocontroller中添加@RefreshScope，用于刷新配置，测试配置
 
+#### 实现数值超过特定阈值，自动刷新入数据库
 
+- nacos中配置对应阈值
+- 在vlogservice中添加更新数据到数据库的方法
+- 在vlogController中添加@RefreshScope，@Value("${nacos.counts}")，然后在like路由方法中添加剩余的更新逻辑
 
+### ip漂移技术
 
+使用虚拟ip技术，保证即使有节点宕机，备用节点也能直接使用虚拟ip直接访问
 
+## 部署上线
+
+- 部署相关环境
 
 
 

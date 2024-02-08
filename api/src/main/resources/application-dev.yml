@@ -1,5 +1,5 @@
 server:
-  port: 8099
+  port: ${port:8099}
 
 spring:
   datasource: # 数据源的相关配置
@@ -24,7 +24,7 @@ spring:
     database: 0
   data:
     mongodb:
-      uri: mongodb://root:root@192.168.5.100:27017
+      uri: mongodb://root:root@hadoop100:27017
       database: imooc
   rabbitmq:
     host: hadoop100
@@ -32,6 +32,17 @@ spring:
     username: admin
     password: admin
     virtual-host: imooc
+  cloud:
+    nacos:
+      discovery:
+        server-addr: hadoop100:8848
+
+# 打开监控
+management:
+  endpoint:
+    web:
+      exposure:
+        include: '*'
 
 # MinIO 配置
 minio:

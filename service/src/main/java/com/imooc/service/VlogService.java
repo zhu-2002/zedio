@@ -6,6 +6,7 @@ import com.imooc.pojo.Users;
 import com.imooc.pojo.Vlog;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.IndexVlogVO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -66,4 +67,6 @@ public interface VlogService {
      * */
     public PagedGridResult getMyFollowVlogList(String userId , Integer page , Integer pageSize);
 
+    @Transactional
+    void flushCounts(String vlogId, Integer counts);
 }

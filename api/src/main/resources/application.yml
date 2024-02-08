@@ -5,6 +5,8 @@ server:
     max-swallow-size: -1  # tomcat默认大小2M，超过2M的文件不会被捕获，需要调整此处大小为100MB或者-1即可
 
 spring:
+  application:
+    name: imooc-red-book-nacos
   profiles:
     active: dev
   banner:

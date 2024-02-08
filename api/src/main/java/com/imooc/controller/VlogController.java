@@ -8,14 +8,23 @@ import com.imooc.service.VlogService;
 import com.imooc.utils.PagedGridResult;
 import com.imooc.vo.IndexVlogVO;
 import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 // log4j的注释
 @Api(tags = "视频业务 测试接口")
 @RequestMapping("vlog")
+@Slf4j
+@RefreshScope
 public class VlogController extends BaseInfoController {
+    @Value("${nacos.counts}")
+    private Integer nacosCounts ;
+
     @Autowired
     private VlogService vlogService;
 
@@ -125,6 +134,18 @@ public class VlogController extends BaseInfoController {
 
         // 我点赞的视频，需要在redis中保存关联关系
         redis.set(REDIS_USER_LIKE_VLOG+":"+userId+":"+vlogId,"1") ;
+
+        // 超过阈值，更新到数据库
+        String countsStr = redis.get(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId);
+        log.info(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId);
+        Integer counts = 0 ;
+        if (StringUtils.isNotBlank(countsStr) ){
+            counts = Integer.valueOf(countsStr) ;
+            if ( counts >= nacosCounts ){
+                vlogService.flushCounts(vlogId,counts);
+            }
+        }
+
 
 
         return GraceJSONResult.ok();
