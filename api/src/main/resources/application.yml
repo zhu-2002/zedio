@@ -8,7 +8,8 @@ spring:
   application:
     name: imooc-red-book-nacos
   profiles:
-    active: dev
+    active: prod
+#    active: dev
   banner:
     location: classpath:banner/kun.txt
   servlet:

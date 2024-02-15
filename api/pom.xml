@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+
 <!--    接口层，暴露接口给前端调用-->
     <artifactId>api</artifactId>
 
@@ -54,5 +55,15 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <finalName>zedio</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

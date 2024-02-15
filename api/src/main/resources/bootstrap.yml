@@ -4,5 +4,5 @@ spring:
   cloud:
     nacos:
       config:
-        server-addr: hadoop100:8848   # nacos 所在的地址
+        server-addr: 172.17.0.5:8848   # nacos 所在的地址
         file-extension: yaml
